@@ -10,7 +10,7 @@ namespace CommunityToolkit.Maui.UI.Views;
 /// The popup control's base implementation.
 /// </summary>
 [ContentProperty(nameof(Content))]
-public abstract class BasePopup : VisualElement, IElementConfiguration<BasePopup>, IBasePopup
+public abstract class BasePopup : Element, IElementConfiguration<BasePopup>, IBasePopup
 {
 	readonly WeakEventManager<PopupDismissedEventArgs> dismissWeakEventManager = new();
 	readonly WeakEventManager<PopupOpenedEventArgs> openedWeakEventManager = new();
@@ -186,8 +186,6 @@ public abstract class BasePopup : VisualElement, IElementConfiguration<BasePopup
 
 	void IBasePopup.OnOpened()
 	{
-		// Why handler is null here?
-		Handler?.Invoke(nameof(IBasePopup.OnOpened));
 		OnOpened();
 	}
 }

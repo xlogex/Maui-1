@@ -1,56 +1,43 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Maui;
+using AView = Android.Views.View;
 using Microsoft.Maui.Handlers;
 
 namespace CommunityToolkit.Maui.UI.Views;
 
-public partial class PopUpViewHandler : ElementHandler<IBasePopup, PopupRenderer>
+public partial class PopupViewHandler : ElementHandler<IBasePopup, PopupRenderer>
 {
-	public static PropertyMapper<IBasePopup, PopUpViewHandler> PopUpMapper = new(ElementMapper)
-	{
-		[nameof(IBasePopup.Anchor)] = MapAnchor,
-		[nameof(IBasePopup.Color)] = MapColor,
-		[nameof(IBasePopup.Size)] = MapSize,
-	};
+	internal AView? Container { get; set; }
 
-	public static CommandMapper<IBasePopup, PopUpViewHandler> PopUpCommandMapper = new(ElementCommandMapper) 
-	{
-		[nameof(IBasePopup.OnDismissed)] = MapOnDismissed,
-	};
-
-	public static void MapOnDismissed(PopUpViewHandler handler, IBasePopup view, object? result)
+	public static void MapOnDismissed(PopupViewHandler handler, IBasePopup view, object? result)
 	{
 		handler.NativeView?.Dismiss();
 	}
 
-	public static void MapAnchor(PopUpViewHandler handler, IBasePopup view)
+	public static void MapOnOpened(PopupViewHandler handler, IBasePopup view, object? result)
+	{
+		handler.NativeView?.Show();
+	}
+
+	public static void MapAnchor(PopupViewHandler handler, IBasePopup view)
 	{
 		handler.NativeView?.SetAnchor(view);
 	}
 
-	public static void MapColor(PopUpViewHandler handler, IBasePopup view)
+	public static void MapLightDismiss(PopupViewHandler handler, IBasePopup view)
+	{
+		handler.NativeView?.SetLightDismiss(view);
+	}
+
+	public static void MapColor(PopupViewHandler handler, IBasePopup view)
 	{
 		handler.NativeView?.SetColor(view);
 	}
 
-	public static void MapSize(PopUpViewHandler handler, IBasePopup view)
+	public static void MapSize(PopupViewHandler handler, IBasePopup view)
 	{
-		handler.NativeView?.SetColor(view);
-	}
-
-	public PopUpViewHandler(PropertyMapper? mapper, CommandMapper? commandMapper)
-		: base (mapper ?? PopUpMapper, commandMapper ?? PopUpCommandMapper)
-	{
-	}
-
-
-	public PopUpViewHandler()
-		: base (PopUpMapper, PopUpCommandMapper)
-	{
+		handler.NativeView?.SetSize(view, handler.Container);
+		handler.NativeView?.SetAnchor(view);
 	}
 
 	protected override PopupRenderer CreateNativeElement()
@@ -60,7 +47,7 @@ public partial class PopUpViewHandler : ElementHandler<IBasePopup, PopupRenderer
 
 	protected override void ConnectHandler(PopupRenderer nativeView)
 	{
-		nativeView.SetElement(VirtualView);
+		Container = nativeView.SetElement(VirtualView);
 		nativeView.ShowEvent += OnShowed;
 	}
 

@@ -118,7 +118,6 @@ public abstract class BasePopup : VisualElement, IElementConfiguration<BasePopup
 
 	IView? IBasePopup.Anchor => Anchor;
 
-	
 	IView? IBasePopup.Content => Content;
 
 
@@ -187,6 +186,8 @@ public abstract class BasePopup : VisualElement, IElementConfiguration<BasePopup
 
 	void IBasePopup.OnOpened()
 	{
+		// Why handler is null here?
+		Handler?.Invoke(nameof(IBasePopup.OnOpened));
 		OnOpened();
 	}
 }

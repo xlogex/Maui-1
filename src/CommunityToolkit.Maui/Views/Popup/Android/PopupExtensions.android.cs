@@ -5,6 +5,9 @@ using Android.Views;
 using Microsoft.Maui.Controls;
 using Android.Graphics.Drawables;
 using AColorRes = Android.Resource.Color;
+using Android.Widget;
+using static Android.App.ActionBar;
+using AView = Android.Views.View;
 
 namespace CommunityToolkit.Maui.UI.Views;
 public static class PopupExtensions
@@ -51,7 +54,7 @@ public static class PopupExtensions
 
 	static Android.Views.Window GetWindow(Dialog dialog)
 	{
-		var window = dialog.Window ?? throw new Exception("WIndows is null!");
+		var window = dialog.Window ?? throw new Exception("Android.Views.Window is null!");
 
 		return window;
 	}
@@ -62,18 +65,29 @@ public static class PopupExtensions
 		window?.SetBackgroundDrawable(new ColorDrawable(basePopup.Color.ToNative(AColorRes.BackgroundLight, dialog.Context)));
 	}
 
-	public static void SetSize(this Dialog dialog, IBasePopup basePopup)
+	public static void SetLightDismiss(this Dialog dialog, IBasePopup basePopup)
 	{
+		if (basePopup.IsLightDismissEnabled)
+			return;
+
+		dialog.SetCancelable(false);
+		dialog.SetCanceledOnTouchOutside(false);
+	}
+
+	public static void SetSize(this Dialog dialog, IBasePopup basePopup, AView? container)
+	{
+		var window = GetWindow(dialog);
+		var context = dialog.Context;
 		if (basePopup.Content != null && basePopup.Size != default)
 		{
-			var decorView = (ViewGroup)(Window?.DecorView ?? throw new NullReferenceException());
+			var decorView = (ViewGroup)(window?.DecorView ?? throw new NullReferenceException());
 			var child = decorView?.GetChildAt(0) ?? throw new NullReferenceException();
 
-			var realWidth = (int)Context.ToPixels(basePopup.Size.Width);
-			var realHeight = (int)Context.ToPixels(basePopup.Size.Height);
+			var realWidth = (int)context.ToPixels(basePopup.Size.Width);
+			var realHeight = (int)context.ToPixels(basePopup.Size.Height);
 
-			var realContentWidth = (int)Context.ToPixels(basePopup.Content.WidthRequest);
-			var realContentHeight = (int)Context.ToPixels(basePopup.Content.HeightRequest);
+			var realContentWidth = (int)context.ToPixels(basePopup.Content.Width);
+			var realContentHeight = (int)context.ToPixels(basePopup.Content.Height);
 
 			var childLayoutParams = (FrameLayout.LayoutParams)(child?.LayoutParameters ?? throw new NullReferenceException());
 			childLayoutParams.Width = realWidth;
@@ -81,27 +95,27 @@ public static class PopupExtensions
 			child.LayoutParameters = childLayoutParams;
 
 			var horizontalParams = -1;
-			switch (basePopup.Content.HorizontalOptions.Alignment)
+			switch (basePopup.Content.HorizontalLayoutAlignment)
 			{
-				case LayoutAlignment.Center:
-				case LayoutAlignment.End:
-				case LayoutAlignment.Start:
+				case Microsoft.Maui.Primitives.LayoutAlignment.Center:
+				case Microsoft.Maui.Primitives.LayoutAlignment.End:
+				case Microsoft.Maui.Primitives.LayoutAlignment.Start:
 					horizontalParams = LayoutParams.WrapContent;
 					break;
-				case LayoutAlignment.Fill:
+				case Microsoft.Maui.Primitives.LayoutAlignment.Fill:
 					horizontalParams = LayoutParams.MatchParent;
 					break;
 			}
 
 			var verticalParams = -1;
-			switch (basePopup.Content.VerticalOptions.Alignment)
+			switch (basePopup.Content.VerticalLayoutAlignment)
 			{
-				case LayoutAlignment.Center:
-				case LayoutAlignment.End:
-				case LayoutAlignment.Start:
+				case Microsoft.Maui.Primitives.LayoutAlignment.Center:
+				case Microsoft.Maui.Primitives.LayoutAlignment.End:
+				case Microsoft.Maui.Primitives.LayoutAlignment.Start:
 					verticalParams = LayoutParams.WrapContent;
 					break;
-				case LayoutAlignment.Fill:
+				case Microsoft.Maui.Primitives.LayoutAlignment.Fill:
 					verticalParams = LayoutParams.MatchParent;
 					break;
 			}
@@ -135,34 +149,34 @@ public static class PopupExtensions
 
 			var containerLayoutParams = new FrameLayout.LayoutParams(horizontalParams, verticalParams);
 
-			switch (basePopup.Content.VerticalOptions.Alignment)
+			switch (basePopup.Content.VerticalLayoutAlignment)
 			{
-				case LayoutAlignment.Start:
+				case Microsoft.Maui.Primitives.LayoutAlignment.Start:
 					containerLayoutParams.Gravity = GravityFlags.Top;
 					break;
-				case LayoutAlignment.Center:
-				case LayoutAlignment.Fill:
+				case Microsoft.Maui.Primitives.LayoutAlignment.Center:
+				case Microsoft.Maui.Primitives.LayoutAlignment.Fill:
 					containerLayoutParams.Gravity = GravityFlags.FillVertical;
 					containerLayoutParams.Height = realHeight;
 					//container.MatchHeight = true;
 					break;
-				case LayoutAlignment.End:
+				case Microsoft.Maui.Primitives.LayoutAlignment.End:
 					containerLayoutParams.Gravity = GravityFlags.Bottom;
 					break;
 			}
 
-			switch (basePopup.Content.HorizontalOptions.Alignment)
+			switch (basePopup.Content.HorizontalLayoutAlignment)
 			{
-				case LayoutAlignment.Start:
+				case Microsoft.Maui.Primitives.LayoutAlignment.Start:
 					containerLayoutParams.Gravity |= GravityFlags.Left;
 					break;
-				case LayoutAlignment.Center:
-				case LayoutAlignment.Fill:
+				case Microsoft.Maui.Primitives.LayoutAlignment.Center:
+				case Microsoft.Maui.Primitives.LayoutAlignment.Fill:
 					containerLayoutParams.Gravity |= GravityFlags.FillHorizontal;
 					containerLayoutParams.Width = realWidth;
 					//container.MatchWidth = true;
 					break;
-				case LayoutAlignment.End:
+				case Microsoft.Maui.Primitives.LayoutAlignment.End:
 					containerLayoutParams.Gravity |= GravityFlags.Right;
 					break;
 			}

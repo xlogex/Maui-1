@@ -6,14 +6,17 @@ namespace CommunityToolkit.Maui.Extensions;
 
 public static partial class NavigationExtensions
 {
-	static void PlatformShowPopup(BasePopup popup, IMauiContext mauiContext)
+	static IElementHandler PlatformShowPopup(BasePopup popup, IMauiContext mauiContext)
 	{
-		_ = popup.ToHandler(mauiContext);
+		var x = popup.ToHandler(mauiContext);
+		x.Invoke(nameof(IBasePopup.OnOpened));
+		return x;
 	}
 
 	static Task<T?> PlatformShowPopupAsync<T>(Popup<T> popup, IMauiContext mauiContext)
 	{
 		PlatformShowPopup(popup, mauiContext);
+		
 		return popup.Result;
 	}
 }

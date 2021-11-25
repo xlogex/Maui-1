@@ -1,82 +1,61 @@
 ﻿using System;
-using System.ComponentModel;
 using Android.App;
 using Android.Content;
-using Android.Graphics.Drawables;
-using Android.Views;
-using Android.Widget;
 using Microsoft.Maui;
-using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Platform;
-using static Android.App.ActionBar;
-using AColorRes = Android.Resource.Color;
 using AView = Android.Views.View;
-using GravityFlags = Android.Views.GravityFlags;
 
 namespace CommunityToolkit.Maui.UI.Views;
 
 public class PopupRenderer : Dialog, IDialogInterfaceOnCancelListener
 {
-	int? defaultLabelFor;
 	AView? container;
 	bool isDisposed;
 
-	public IBasePopup? Element { get; private set; }
+	readonly IMauiContext mauiContext;
+
+	public IBasePopup? VirtualView { get; private set; }
 
 	public PopupRenderer(Context context, IMauiContext mauiContext)
 		: base(context)
 	{
-		this.mauiContext = mauiContext;
+		this.mauiContext = mauiContext ?? throw new ArgumentNullException(nameof(mauiContext));
 	}
-
-	IMauiContext mauiContext;
 	
 	public AView? SetElement(IBasePopup? element)
 	{
 		if (element == null)
 			throw new ArgumentNullException(nameof(element));
-
-		//if (element is not BasePopup popup)
-		//	throw new ArgumentNullException("Element is not of type " + typeof(BasePopup), nameof(element));
-
-		var oldElement = Element;
 		
-		Element = element;
-		CreateControl(Element);
+		VirtualView = element;
+		CreateControl(VirtualView);
 
 		return container;
-
-		//if (oldElement != null)
-		//	oldElement.PropertyChanged -= OnElementPropertyChanged;
-
-		//element.PropertyChanged += OnElementPropertyChanged;
-
-		//OnElementChanged(new ElementChangedEventArgs<BasePopup?>(oldElement, Element));
 	}
 
 	protected virtual void OnElementChanged(ElementChangedEventArgs<BasePopup?> e)
 	{
-		if (e.NewElement != null && !isDisposed && Element is BasePopup basePopup)
+		if (e.NewElement != null && !isDisposed && VirtualView is BasePopup basePopup)
 		{
 			SetEvents(basePopup);
-			this.SetColor(basePopup);
-			this.SetSize(basePopup, container);
-			this.SetAnchor(basePopup);
-			this.SetLightDismiss(basePopup);
+			//this.SetColor(basePopup);
+			//this.SetSize(basePopup, container);
+			//this.SetAnchor(basePopup);
+			//this.SetLightDismiss(basePopup);
 
-			Show();
+			//Show();
 		}
 	}
 
 	public override void Show()
 	{
 		base.Show();
-		Element?.OnOpened();
+		VirtualView?.OnOpened();
 	}
 
 	public void CreateControl(in IBasePopup basePopup)
 	{
-		if (basePopup.Content != null && mauiContext != null)
+		if (basePopup.Content != null)
 		{
 			container = basePopup.Content.ToNative(mauiContext);
 			SetContentView(container);

@@ -7,4 +7,8 @@ namespace CommunityToolkit.Maui.UI.Views;
 /// </summary>
 public class PopupOpenedEventArgs : EventArgs
 {
+	/// <summary>
+	/// Empty version of <see cref= "PopupOpenedEventArgs"/>.
+	/// </summary>
+	public static new PopupOpenedEventArgs Empty { get; } = new PopupOpenedEventArgs();
 }

@@ -155,7 +155,7 @@ public abstract class BasePopup : Element, IElementConfiguration<BasePopup>, IBa
 	/// Invokes the <see cref="Opened"/> event.
 	/// </summary>
 	internal virtual void OnOpened() =>
-		openedWeakEventManager.RaiseEvent(this, new PopupOpenedEventArgs(), nameof(Opened));
+		openedWeakEventManager.RaiseEvent(this, PopupOpenedEventArgs.Empty, nameof(Opened));
 
 	/// <summary>
 	/// Invoked when the popup is light dismissed. In other words when the
@@ -164,7 +164,9 @@ public abstract class BasePopup : Element, IElementConfiguration<BasePopup>, IBa
 	protected internal virtual void LightDismiss() =>
 		dismissWeakEventManager.RaiseEvent(this, new PopupDismissedEventArgs(null, true), nameof(Dismissed));
 
-
+	/// <summary>
+	/// <inheritdoc />
+	/// </summary>
 	protected override void OnBindingContextChanged()
 	{
 		base.OnBindingContextChanged();

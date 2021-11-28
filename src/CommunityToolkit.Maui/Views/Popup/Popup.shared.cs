@@ -7,3 +7,9 @@
 public class Popup : Popup<object>
 {
 }
+
+
+public class PopupString : Popup<string>
+{
+
+}

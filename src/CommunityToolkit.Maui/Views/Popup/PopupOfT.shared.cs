@@ -2,8 +2,16 @@
 
 namespace CommunityToolkit.Maui.UI.Views;
 
+public interface IPopup<T> : IBasePopup
+{
+	Task<T?> Result { get; }
+
+	void Dismiss(T? result);
+	void Reset();
+}
+
 /// <inheritdoc/>
-public abstract class Popup<T> : BasePopup
+public abstract class Popup<T> : BasePopup, IPopup<T>
 {
 	TaskCompletionSource<T?> taskCompletionSource;
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Maui.Controls.Hosting;
 using Microsoft.Maui.Controls.Xaml;
 using Microsoft.Maui.Hosting;
+using CommunityToolkit.Maui.Hosting;
 
 [assembly: XamlCompilationAttribute(XamlCompilationOptions.Compile)]
 
@@ -12,7 +13,7 @@ public static class MauiProgram
 	{
 		var builder = MauiApp.CreateBuilder();
 		builder.UseMauiApp<App>();
-
+		builder.UseCommunityToolkit();
 		return builder.Build();
 	}
 }

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="MSBuild.Sdk.Extras/2.1.2">
 
   <PropertyGroup>
@@ -75,5 +75,10 @@
   <ItemGroup Condition=" $(TargetFramework.Contains('-maccatalyst')) ">
     <Compile Include="**\*.macos.cs" />
     <Compile Include="**\*.macos.*.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' OR $(TargetFramework.StartsWith('netstandard'))">
+    <Compile Include="**\*.netstandard.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+    <Compile Include="**\*.netstandard.*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
   </ItemGroup>
 </Project>

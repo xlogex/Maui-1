@@ -6,10 +6,12 @@ using Microsoft.Maui.Controls;
 using Android.Graphics.Drawables;
 using AColorRes = Android.Resource.Color;
 using Android.Widget;
+using CommunityToolkit.Maui.UI.Views;
 using static Android.App.ActionBar;
 using AView = Android.Views.View;
 
-namespace CommunityToolkit.Maui.UI.Views;
+namespace CommunityToolkit.Maui.Platform;
+
 public static class PopupExtensions
 {
 	public static void SetAnchor(this Dialog dialog, IBasePopup basePopup)

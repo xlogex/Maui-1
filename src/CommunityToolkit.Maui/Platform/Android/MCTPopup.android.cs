@@ -1,13 +1,13 @@
 ﻿using System;
 using Android.App;
 using Android.Content;
+using CommunityToolkit.Maui.UI.Views;
 using Microsoft.Maui;
-using Microsoft.Maui.Controls.Platform;
 using AView = Android.Views.View;
 
-namespace CommunityToolkit.Maui.UI.Views;
+namespace CommunityToolkit.Maui.Platform;
 
-public class PopupRenderer : Dialog, IDialogInterfaceOnCancelListener
+public class MCTPopup : Dialog, IDialogInterfaceOnCancelListener
 {
 	AView? container;
 	bool isDisposed;
@@ -16,7 +16,7 @@ public class PopupRenderer : Dialog, IDialogInterfaceOnCancelListener
 
 	public IBasePopup? VirtualView { get; private set; }
 
-	public PopupRenderer(Context context, IMauiContext mauiContext)
+	public MCTPopup(Context context, IMauiContext mauiContext)
 		: base(context)
 	{
 		this.mauiContext = mauiContext ?? throw new ArgumentNullException(nameof(mauiContext));
@@ -29,22 +29,8 @@ public class PopupRenderer : Dialog, IDialogInterfaceOnCancelListener
 		
 		VirtualView = element;
 		CreateControl(VirtualView);
-
+		SetEvents(element);
 		return container;
-	}
-
-	protected virtual void OnElementChanged(ElementChangedEventArgs<BasePopup?> e)
-	{
-		if (e.NewElement != null && !isDisposed && VirtualView is BasePopup basePopup)
-		{
-			SetEvents(basePopup);
-			//this.SetColor(basePopup);
-			//this.SetSize(basePopup, container);
-			//this.SetAnchor(basePopup);
-			//this.SetLightDismiss(basePopup);
-
-			//Show();
-		}
 	}
 
 	public override void Show()
@@ -62,10 +48,11 @@ public class PopupRenderer : Dialog, IDialogInterfaceOnCancelListener
 		}
 	}
 
-	void SetEvents(in BasePopup basePopup)
+	void SetEvents(in IBasePopup basePopup)
 	{
 		SetOnCancelListener(this);
-		basePopup.Dismissed += OnDismissed;
+		if (basePopup is BasePopup bp)
+			bp.Dismissed += OnDismissed;
 	}
 
 	void OnDismissed(object? sender, PopupDismissedEventArgs e)
@@ -76,26 +63,26 @@ public class PopupRenderer : Dialog, IDialogInterfaceOnCancelListener
 
 	public void OnCancel(IDialogInterface? dialog)
 	{
-		//if (Element?.IsLightDismissEnabled is true)
-		//	Element.LightDismiss();
+		if (VirtualView?.IsLightDismissEnabled is true)
+			VirtualView.LightDismiss();
 	}
 
-	//protected override void Dispose(bool disposing)
-	//{
-	//	if (isDisposed)
-	//		return;
+	protected override void Dispose(bool disposing)
+	{
+		if (isDisposed)
+			return;
 
-	//	isDisposed = true;
-	//	if (disposing)
-	//	{
+		isDisposed = true;
+		if (disposing)
+		{
 
-	//		if (Element != null)
-	//		{
-	//			Element.PropertyChanged -= OnElementPropertyChanged;
-	//			Element = null;
-	//		}
-	//	}
+			if (VirtualView is BasePopup bp)
+			{
+				bp.Dismissed -= OnDismissed;
+				VirtualView = null;
+			}
+		}
 
-	//	base.Dispose(disposing);
-	//}
+		base.Dispose(disposing);
+	}
 }

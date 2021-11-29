@@ -2,10 +2,11 @@
 using Microsoft.Maui;
 using AView = Android.Views.View;
 using Microsoft.Maui.Handlers;
+using CommunityToolkit.Maui.Platform;
 
 namespace CommunityToolkit.Maui.UI.Views;
 
-public partial class PopupViewHandler : ElementHandler<IBasePopup, PopupRenderer>
+public partial class PopupViewHandler : ElementHandler<IBasePopup, MCTPopup>
 {
 	public static PropertyMapper<IBasePopup, PopupViewHandler> PopUpMapper = new(ElementMapper)
 	{
@@ -68,12 +69,12 @@ public partial class PopupViewHandler : ElementHandler<IBasePopup, PopupRenderer
 		handler.NativeView?.SetAnchor(view);
 	}
 
-	protected override PopupRenderer CreateNativeElement()
+	protected override MCTPopup CreateNativeElement()
 	{
-		return new PopupRenderer(MauiContext!.Context!, MauiContext);
+		return new MCTPopup(MauiContext!.Context!, MauiContext);
 	}
 
-	protected override void ConnectHandler(PopupRenderer nativeView)
+	protected override void ConnectHandler(MCTPopup nativeView)
 	{
 		Container = nativeView.SetElement(VirtualView);
 		nativeView.ShowEvent += OnShowed;
@@ -84,7 +85,12 @@ public partial class PopupViewHandler : ElementHandler<IBasePopup, PopupRenderer
 		VirtualView?.OnOpened();
 	}
 
-	protected override void DisconnectHandler(PopupRenderer nativeView)
+	private protected override void OnDisconnectHandler(object nativeView)
+	{
+		base.OnDisconnectHandler(nativeView);
+	}
+
+	protected override void DisconnectHandler(MCTPopup nativeView)
 	{
 		nativeView.ShowEvent -= OnShowed;
 		nativeView.Dispose();

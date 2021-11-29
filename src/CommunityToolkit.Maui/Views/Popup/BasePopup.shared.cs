@@ -165,7 +165,7 @@ public abstract class BasePopup : Element, IElementConfiguration<BasePopup>, IBa
 		dismissWeakEventManager.RaiseEvent(this, new PopupDismissedEventArgs(null, true), nameof(Dismissed));
 
 	/// <summary>
-	/// <inheritdoc />
+	///<inheritdoc/>
 	/// </summary>
 	protected override void OnBindingContextChanged()
 	{
@@ -189,5 +189,10 @@ public abstract class BasePopup : Element, IElementConfiguration<BasePopup>, IBa
 	void IBasePopup.OnOpened()
 	{
 		OnOpened();
+	}
+
+	void IBasePopup.LightDismiss()
+	{
+		LightDismiss();
 	}
 }

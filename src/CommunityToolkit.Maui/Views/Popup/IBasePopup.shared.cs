@@ -17,4 +17,6 @@ public interface IBasePopup : IElement
 
 	void OnDismissed(object? result);
 	void OnOpened();
+
+	void LightDismiss();
 }

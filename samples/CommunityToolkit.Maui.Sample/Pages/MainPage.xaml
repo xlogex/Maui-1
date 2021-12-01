@@ -51,6 +51,8 @@
                 HorizontalOptions="Center"
                 Text="Microsoft Corporation 2021"
                 VerticalOptions="End" />
+            <Button Text="Show popup"
+                    Clicked="Bla"/>
         </StackLayout>
     </ScrollView>
 </pages:BasePage>

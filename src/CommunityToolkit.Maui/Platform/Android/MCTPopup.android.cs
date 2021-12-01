@@ -59,6 +59,9 @@ public class MCTPopup : Dialog, IDialogInterfaceOnCancelListener
 	{
 		if (IsShowing)
 			Dismiss();
+
+		if (VirtualView is not null)
+			VirtualView.Handler = null;
 	}
 
 	public void OnCancel(IDialogInterface? dialog)

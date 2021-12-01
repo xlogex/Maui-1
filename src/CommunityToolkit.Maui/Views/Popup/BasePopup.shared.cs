@@ -2,6 +2,7 @@
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Graphics;
 using CommunityToolkit.Maui.Helpers;
+using LayoutAlignment = Microsoft.Maui.Primitives.LayoutAlignment;
 using Microsoft.Maui;
 
 namespace CommunityToolkit.Maui.UI.Views;
@@ -20,8 +21,8 @@ public abstract class BasePopup : Element, IElementConfiguration<BasePopup>, IBa
 	/// </summary>
 	protected BasePopup()
 	{
-		VerticalOptions = LayoutOptions.CenterAndExpand;
-		HorizontalOptions = LayoutOptions.CenterAndExpand;
+		VerticalOptions = LayoutAlignment.Center;
+		HorizontalOptions = LayoutAlignment.Center;
 		IsLightDismissEnabled = true;
 		platformConfigurationRegistry = new Lazy<PlatformConfigurationRegistry<BasePopup>>(() => new PlatformConfigurationRegistry<BasePopup>(this));
 	}
@@ -36,8 +37,9 @@ public abstract class BasePopup : Element, IElementConfiguration<BasePopup>, IBa
 	public static readonly BindableProperty ColorProperty = BindableProperty.Create(nameof(Color), typeof(Color), typeof(BasePopup), default);
 	public static readonly BindableProperty SizeProperty = BindableProperty.Create(nameof(Size), typeof(Size), typeof(BasePopup), default(Size));
 
-	public static readonly BindableProperty VerticalOptionsProperty = BindableProperty.Create(nameof(VerticalOptions), typeof(LayoutOptions), typeof(BasePopup), LayoutOptions.CenterAndExpand);
-	public static readonly BindableProperty HorizontalOptionsProperty = BindableProperty.Create(nameof(HorizontalOptions), typeof(LayoutOptions), typeof(BasePopup), LayoutOptions.CenterAndExpand);
+	public static readonly BindableProperty VerticalOptionsProperty = BindableProperty.Create(nameof(VerticalOptions), typeof(LayoutAlignment), typeof(BasePopup), LayoutAlignment.Center);
+	
+	public static readonly BindableProperty HorizontalOptionsProperty = BindableProperty.Create(nameof(HorizontalOptions), typeof(LayoutAlignment), typeof(BasePopup), LayoutAlignment.Center);
 
 	/// <summary>
 	/// Gets or sets the <see cref="View"/> content to render in the Popup.
@@ -67,18 +69,18 @@ public abstract class BasePopup : Element, IElementConfiguration<BasePopup>, IBa
 	/// <summary>
 	/// Gets or sets the <see cref="LayoutOptions"/> for positioning the <see cref="Popup"/> vertically on the screen.
 	/// </summary>
-	public LayoutOptions VerticalOptions
+	public LayoutAlignment VerticalOptions
 	{
-		get => (LayoutOptions)GetValue(VerticalOptionsProperty);
+		get => (LayoutAlignment)GetValue(VerticalOptionsProperty);
 		set => SetValue(VerticalOptionsProperty, value);
 	}
 
 	/// <summary>
 	/// Gets or sets the <see cref="LayoutOptions"/> for positioning the <see cref="Popup"/> horizontally on the screen.
 	/// </summary>
-	public LayoutOptions HorizontalOptions
+	public LayoutAlignment HorizontalOptions
 	{
-		get => (LayoutOptions)GetValue(HorizontalOptionsProperty);
+		get => (LayoutAlignment)GetValue(HorizontalOptionsProperty);
 		set => SetValue(HorizontalOptionsProperty, value);
 	}
 

@@ -9,6 +9,7 @@ using Android.Widget;
 using CommunityToolkit.Maui.UI.Views;
 using static Android.App.ActionBar;
 using AView = Android.Views.View;
+using LayoutAlignment = Microsoft.Maui.Primitives.LayoutAlignment;
 
 namespace CommunityToolkit.Maui.Platform;
 
@@ -189,13 +190,13 @@ public static class PopupExtensions
 
 	static void SetDialogPosition(in IBasePopup basePopup, Android.Views.Window window)
 	{
-		var gravityFlags = basePopup.VerticalOptions.Alignment switch
+		var gravityFlags = basePopup.VerticalOptions switch
 		{
 			LayoutAlignment.Start => GravityFlags.Top,
 			LayoutAlignment.End => GravityFlags.Bottom,
 			_ => GravityFlags.CenterVertical,
 		};
-		gravityFlags |= basePopup.HorizontalOptions.Alignment switch
+		gravityFlags |= basePopup.HorizontalOptions switch
 		{
 			LayoutAlignment.Start => GravityFlags.Left,
 			LayoutAlignment.End => GravityFlags.Right,

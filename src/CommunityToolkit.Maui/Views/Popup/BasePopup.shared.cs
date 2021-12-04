@@ -24,7 +24,7 @@ public abstract class BasePopup : Element, IElementConfiguration<BasePopup>, IBa
 		VerticalOptions = LayoutAlignment.Center;
 		HorizontalOptions = LayoutAlignment.Center;
 		IsLightDismissEnabled = true;
-		platformConfigurationRegistry = new Lazy<PlatformConfigurationRegistry<BasePopup>>(() => new PlatformConfigurationRegistry<BasePopup>(this));
+		platformConfigurationRegistry = new Lazy<PlatformConfigurationRegistry<BasePopup>>(() => new(this));
 	}
 
 	readonly Lazy<PlatformConfigurationRegistry<BasePopup>> platformConfigurationRegistry;

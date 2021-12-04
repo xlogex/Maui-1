@@ -14,9 +14,7 @@ public interface IBasePopup : IElement
 	bool IsLightDismissEnabled { get; }
 	Size Size { get; }
 	LayoutAlignment VerticalOptions { get; }
-
 	void OnDismissed(object? result);
 	void OnOpened();
-
 	void LightDismiss();
 }

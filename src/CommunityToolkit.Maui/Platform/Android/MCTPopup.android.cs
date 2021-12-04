@@ -21,15 +21,15 @@ public class MCTPopup : Dialog, IDialogInterfaceOnCancelListener
 	{
 		this.mauiContext = mauiContext ?? throw new ArgumentNullException(nameof(mauiContext));
 	}
-	
+
 	public AView? SetElement(IBasePopup? element)
 	{
-		if (element == null)
+		if (element is null)
 			throw new ArgumentNullException(nameof(element));
-		
+
 		VirtualView = element;
 		CreateControl(VirtualView);
-		SetEvents(element);
+		SetEvents();
 		return container;
 	}
 
@@ -48,26 +48,14 @@ public class MCTPopup : Dialog, IDialogInterfaceOnCancelListener
 		}
 	}
 
-	void SetEvents(in IBasePopup basePopup)
+	void SetEvents()
 	{
 		SetOnCancelListener(this);
-		if (basePopup is BasePopup bp)
-			bp.Dismissed += OnDismissed;
-	}
-
-	void OnDismissed(object? sender, PopupDismissedEventArgs e)
-	{
-		if (IsShowing)
-			Dismiss();
-
-		if (VirtualView is not null)
-			VirtualView.Handler = null;
 	}
 
 	public void OnCancel(IDialogInterface? dialog)
 	{
-		if (VirtualView?.IsLightDismissEnabled is true)
-			VirtualView.LightDismiss();
+		VirtualView?.Handler?.Invoke(nameof(IBasePopup.LightDismiss));
 	}
 
 	protected override void Dispose(bool disposing)
@@ -78,12 +66,7 @@ public class MCTPopup : Dialog, IDialogInterfaceOnCancelListener
 		isDisposed = true;
 		if (disposing)
 		{
-
-			if (VirtualView is BasePopup bp)
-			{
-				bp.Dismissed -= OnDismissed;
-				VirtualView = null;
-			}
+			VirtualView = null;
 		}
 
 		base.Dispose(disposing);

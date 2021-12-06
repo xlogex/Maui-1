@@ -8,12 +8,14 @@ public static partial class NavigationExtensions
 {
 	static void PlatformShowPopup(BasePopup popup, IMauiContext mauiContext)
 	{
-		_ = popup.ToNative(mauiContext);
+		var popupNative = popup.ToHandler(mauiContext);
+		popupNative.Invoke(nameof(IBasePopup.OnOpened));
 	}
 
 	static Task<T?> PlatformShowPopupAsync<T>(Popup<T> popup, IMauiContext mauiContext)
 	{
 		PlatformShowPopup(popup, mauiContext);
+
 		return popup.Result;
 	}
 }

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CommunityToolkit.Maui.Platform;
 using Microsoft.Maui.Handlers;
 
@@ -65,5 +61,11 @@ public partial class PopupViewHandler : ElementHandler<IBasePopup, PopupRenderer
 	protected override PopupRenderer CreateNativeElement()
 	{
 		return new PopupRenderer(MauiContext ?? throw new NullReferenceException(nameof(MauiContext)));
+	}
+
+	protected override void DisconnectHandler(PopupRenderer nativeView)
+	{
+		base.DisconnectHandler(nativeView);
+		nativeView?.Dispose();
 	}
 }

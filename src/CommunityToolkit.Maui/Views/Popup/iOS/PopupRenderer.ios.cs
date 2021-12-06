@@ -27,6 +27,7 @@ public class PopupRenderer : UIViewController
 	public PopupRenderer(IMauiContext mauiContext)
 	{
 		this.mauiContext = mauiContext;
+		ModalInPopover = true;
 	}
 
 	public void SetElementSize(Size size) =>
@@ -54,13 +55,13 @@ public class PopupRenderer : UIViewController
 	public void SetElement(IBasePopup element)
 	{
 		if (element is not IBasePopup)
-			throw new ArgumentNullException("Element is not of type " + typeof(BasePopup), nameof(element));
+			throw new ArgumentNullException(nameof(element), "Element is not of type " + typeof(BasePopup));
 
 		Element = element;
+		ModalPresentationStyle = UIModalPresentationStyle.Popover;
 		CreateControl();
 		SetViewController();
 		SetPresentationController();
-		SetEvents();
 		SetView();
 		AddToCurrentPageViewController();
 	}
@@ -69,9 +70,6 @@ public class PopupRenderer : UIViewController
 	{
 		if (e.NewElement != null && !isDisposed && Element is not null)
 		{
-			ModalInPopover = true;
-			ModalPresentationStyle = UIModalPresentationStyle.Popover;
-
 			//SetViewController();
 			//SetPresentationController();
 			//SetEvents();
@@ -85,7 +83,7 @@ public class PopupRenderer : UIViewController
 
 	void CreateControl()
 	{
-		_ = Element ?? throw new InvalidOperationException($"{nameof(Element)} cannot be null.");
+		_ = Element ?? throw new NullReferenceException($"{nameof(Element)} cannot be null.");
 
 		var view = (View?)Element.Content;
 		var contentPage = new ContentPage { Content = view };
@@ -114,18 +112,10 @@ public class PopupRenderer : UIViewController
 		ViewController = viewController;
 	}
 
-	void SetEvents()
-	{
-		_ = Element ?? throw new InvalidOperationException($"{nameof(Element)} cannot be null");
-
-		if (Element is BasePopup basePopup)
-			basePopup.Dismissed += OnDismissed;
-	}
-
 	void SetView()
 	{
-		_ = View ?? throw new InvalidOperationException($"{nameof(View)} cannot be null");
-		_ = Control ?? throw new InvalidOperationException($"{nameof(Control)} cannot be null");
+		_ = View ?? throw new NullReferenceException($"{nameof(View)} cannot be null");
+		_ = Control ?? throw new NullReferenceException($"{nameof(Control)} cannot be null");
 
 		View.AddSubview(Control.ViewController?.View ?? throw new NullReferenceException());
 		View.Bounds = new(0, 0, PreferredContentSize.Width, PreferredContentSize.Height);
@@ -144,24 +134,20 @@ public class PopupRenderer : UIViewController
 
 	void HandlePopoverDelegateDismissed(object? sender, UIPresentationController e)
 	{
-		_ = Element ?? throw new NullReferenceException();
+		_ = Element ?? throw new NullReferenceException($"{nameof(Element)} cannot be null.");
 
-		if (IsViewLoaded && Element.IsLightDismissEnabled)
-			Element.LightDismiss();
+		if (Element.Handler is null)
+			return;
+
+		Element.Handler.Invoke(nameof(IBasePopup.LightDismiss));
 	}
 
 	void AddToCurrentPageViewController()
 	{
-		_ = ViewController ?? throw new InvalidOperationException($"{nameof(ViewController)} cannot be null");
-		_ = Element ?? throw new InvalidOperationException($"{nameof(Element)} cannot be null");
+		_ = ViewController ?? throw new NullReferenceException($"{nameof(ViewController)} cannot be null.");
+		_ = Element ?? throw new NullReferenceException($"{nameof(Element)} cannot be null.");
 
-		ViewController.PresentViewController(this, true, () => Element.OnOpened());
-	}
-
-	async void OnDismissed(object? sender, PopupDismissedEventArgs e)
-	{
-		if (ViewController != null)
-			await ViewController.DismissViewControllerAsync(true);
+		ViewController.PresentViewController(this, true, () => Element.Handler?.Invoke(nameof(IBasePopup.OnOpened)));
 	}
 
 	protected override void Dispose(bool disposing)
@@ -185,7 +171,7 @@ public class PopupRenderer : UIViewController
 		base.Dispose(disposing);
 	}
 
-	class PopoverDelegate : UIPopoverPresentationControllerDelegate
+	sealed class PopoverDelegate : UIPopoverPresentationControllerDelegate
 	{
 		readonly WeakEventManager<UIPresentationController> popoverDismissedEventManager = new();
 

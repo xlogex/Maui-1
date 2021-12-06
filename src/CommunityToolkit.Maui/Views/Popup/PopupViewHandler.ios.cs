@@ -9,21 +9,29 @@ using Microsoft.Maui.Handlers;
 namespace CommunityToolkit.Maui.UI.Views;
 public partial class PopupViewHandler : ElementHandler<IBasePopup, PopupRenderer>
 {
-	public static void MapOnDismissed(PopupViewHandler handler, IBasePopup view, object? result)
+	public static async void MapOnDismissed(PopupViewHandler handler, IBasePopup view, object? result)
 	{
+		var vc = handler.NativeView?.ViewController;
+		if (vc is not null)
+			await vc.DismissViewControllerAsync(true);
 	}
 
 	public static void MapOnOpened(PopupViewHandler handler, IBasePopup view, object? result)
 	{
+		view.OnOpened();
 	}
 
 	public static void MapOnLightDismiss(PopupViewHandler handler, IBasePopup view, object? result)
 	{
+		if (handler.NativeView is not PopupRenderer popupRenderer)
+			return;
+
+		if (popupRenderer.IsViewLoaded && view.IsLightDismissEnabled)
+			view.LightDismiss();
 	}
 
 	public static void MapAnchor(PopupViewHandler handler, IBasePopup view)
 	{
-
 	}
 
 	public static void MapLightDismiss(PopupViewHandler handler, IBasePopup view)

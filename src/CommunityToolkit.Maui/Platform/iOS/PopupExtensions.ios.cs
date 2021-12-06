@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using Specifics = CommunityToolkit.Maui.PlatformConfiguration.iOSSpecific.PopUp;
+using PopoverArrowDirection = CommunityToolkit.Maui.PlatformConfiguration.iOSSpecific.PopoverArrowDirection;
 using CommunityToolkit.Maui.UI.Views;
 using CoreGraphics;
 using Microsoft.Maui;
@@ -33,7 +34,6 @@ public static class PopupExtensions
 
 		((UIPopoverPresentationController)presentationController).SourceRect = new CGRect(0, 0, preferredContentSize.Width, preferredContentSize.Height);
 
-		_ = basepopup ?? throw new InvalidOperationException($"{nameof(basepopup)} cannot be null");
 		if (basepopup.Anchor is null)
 		{
 			var originY = basepopup.VerticalOptions switch
@@ -53,25 +53,27 @@ public static class PopupExtensions
 			popup.PopoverPresentationController.SourceRect = new CGRect(originX, originY, 0, 0);
 			popup.PopoverPresentationController.PermittedArrowDirections = 0;
 		}
-		else
+		else 
 		{
+			if (basepopup is not BasePopup bp)
+				throw new ArgumentException(nameof(basepopup), $"{nameof(basepopup)} must be an {typeof(BasePopup)}.");
+
+			popup.SetLayout(basepopup);
 			var view = basepopup.Anchor.ToNative(basepopup.Handler?.MauiContext ?? throw new NullReferenceException());
 			popup.PopoverPresentationController.SourceView = view;
 			popup.PopoverPresentationController.SourceRect = view.Bounds;
 
-			//To add
-
-			//var arrowDirection = Specifics.GetArrowDirection(Element);
-			//PopoverPresentationController.PermittedArrowDirections = arrowDirection switch
-			//{
-			//	PopoverArrowDirection.Up => UIPopoverArrowDirection.Up,
-			//	PopoverArrowDirection.Down => UIPopoverArrowDirection.Down,
-			//	PopoverArrowDirection.Left => UIPopoverArrowDirection.Left,
-			//	PopoverArrowDirection.Right => UIPopoverArrowDirection.Right,
-			//	PopoverArrowDirection.Any => UIPopoverArrowDirection.Any,
-			//	PopoverArrowDirection.Unknown => UIPopoverArrowDirection.Unknown,
-			//	_ => 0
-			//};
+			var arrowDirection = Specifics.GetArrowDirection(bp);
+			popup.PopoverPresentationController.PermittedArrowDirections = arrowDirection switch
+			{
+				PopoverArrowDirection.Up => UIPopoverArrowDirection.Up,
+				PopoverArrowDirection.Down => UIPopoverArrowDirection.Down,
+				PopoverArrowDirection.Left => UIPopoverArrowDirection.Left,
+				PopoverArrowDirection.Right => UIPopoverArrowDirection.Right,
+				PopoverArrowDirection.Any => UIPopoverArrowDirection.Any,
+				PopoverArrowDirection.Unknown => UIPopoverArrowDirection.Unknown,
+				_ => 0
+			};
 		}
 	}
 }

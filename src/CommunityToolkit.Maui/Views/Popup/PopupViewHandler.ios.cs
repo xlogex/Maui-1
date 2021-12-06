@@ -11,9 +11,14 @@ public partial class PopupViewHandler : ElementHandler<IBasePopup, PopupRenderer
 {
 	public static async void MapOnDismissed(PopupViewHandler handler, IBasePopup view, object? result)
 	{
-		var vc = handler.NativeView?.ViewController;
+		if (handler.NativeView is null)
+			return;
+
+		var vc = handler.NativeView.ViewController;
 		if (vc is not null)
 			await vc.DismissViewControllerAsync(true);
+
+		handler.DisconnectHandler(handler.NativeView);
 	}
 
 	public static void MapOnOpened(PopupViewHandler handler, IBasePopup view, object? result)
@@ -32,6 +37,8 @@ public partial class PopupViewHandler : ElementHandler<IBasePopup, PopupRenderer
 
 	public static void MapAnchor(PopupViewHandler handler, IBasePopup view)
 	{
+		handler.NativeView?.SetSize(view);
+		handler.NativeView?.SetLayout(view);
 	}
 
 	public static void MapLightDismiss(PopupViewHandler handler, IBasePopup view)

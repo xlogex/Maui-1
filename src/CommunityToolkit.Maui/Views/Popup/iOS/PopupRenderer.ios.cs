@@ -55,7 +55,7 @@ public class PopupRenderer : UIViewController
 	public void SetElement(IBasePopup element)
 	{
 		if (element is not IBasePopup)
-			throw new ArgumentNullException(nameof(element), "Element is not of type " + typeof(BasePopup));
+			throw new ArgumentException(nameof(element), "Element is not of type " + typeof(IBasePopup));
 
 		Element = element;
 		ModalPresentationStyle = UIModalPresentationStyle.Popover;
@@ -64,21 +64,6 @@ public class PopupRenderer : UIViewController
 		SetPresentationController();
 		SetView();
 		AddToCurrentPageViewController();
-	}
-
-	protected virtual void OnElementChanged(ElementChangedEventArgs<BasePopup?> e)
-	{
-		if (e.NewElement != null && !isDisposed && Element is not null)
-		{
-			//SetViewController();
-			//SetPresentationController();
-			//SetEvents();
-			this.SetSize(Element);
-			this.SetLayout(Element);
-			this.SetBackgroundColor(Element);
-			//SetView();
-			//AddToCurrentPageViewController();
-		}
 	}
 
 	void CreateControl()

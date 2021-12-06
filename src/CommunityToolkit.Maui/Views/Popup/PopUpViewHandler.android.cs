@@ -27,9 +27,8 @@ public partial class PopupViewHandler : ElementHandler<IBasePopup, MCTPopup>
 
 	public static void MapOnLightDismiss(PopupViewHandler handler, IBasePopup view, object? result)
 	{
-		var virtualView = handler.VirtualView;
-		if (virtualView?.IsLightDismissEnabled is true)
-			virtualView.LightDismiss();
+		if (view.IsLightDismissEnabled is true)
+			view.LightDismiss();
 	}
 
 	public static void MapAnchor(PopupViewHandler handler, IBasePopup view)

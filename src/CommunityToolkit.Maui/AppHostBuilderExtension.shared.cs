@@ -8,7 +8,7 @@ public static class AppHostBuilderExtension
 	{
 		builder.ConfigureMauiHandlers(h =>
 		{
-#if __ANDROID__
+#if __ANDROID__ || __IOS__
 		   h.AddHandler(typeof(BasePopup), typeof(PopupViewHandler));
 		   h.AddHandler(typeof(Popup), typeof(PopupViewHandler));
 #endif

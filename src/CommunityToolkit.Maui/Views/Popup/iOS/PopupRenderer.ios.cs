@@ -92,7 +92,7 @@ public class PopupRenderer : UIViewController
 		else
 			currentPageRenderer = mainPage;
 
-		var viewController = (currentPageRenderer.Handler.NativeView as PageHandler)?.ViewController;
+		var viewController = (currentPageRenderer.Handler as PageHandler)?.ViewController;
 
 		ViewController = viewController;
 	}

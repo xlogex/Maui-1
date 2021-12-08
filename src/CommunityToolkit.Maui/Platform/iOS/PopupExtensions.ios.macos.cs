@@ -21,7 +21,7 @@ public static class PopupExtensions
 
 	public static void SetBackgroundColor(this UIViewController popup, in IBasePopup basePopup)
 	{
-		if (popup.View is null)
+		if (popup.View is null || basePopup.Color is null)
 			return;
 
 		popup.View.BackgroundColor = basePopup.Color.ToNative();

@@ -23,7 +23,7 @@ public static partial class NavigationExtensions
 
 static class ExtensionsToDelete
 {
-	public static INativeViewHandler ToHandlerInternal(this IElement view, IMauiContext context)
+	public static IElementHandler ToHandlerInternal(this IElement view, IMauiContext context)
 	{
 		_ = view ?? throw new ArgumentNullException(nameof(view));
 		_ = context ?? throw new ArgumentNullException(nameof(context));
@@ -46,6 +46,6 @@ static class ExtensionsToDelete
 		if (handler.VirtualView != view)
 			handler.SetVirtualView(view);
 
-		return (INativeViewHandler)handler;
+		return (IElementHandler)handler;
 	}
 }

@@ -83,11 +83,17 @@ public class PopupRenderer : UIViewController
 	{
 		Page currentPageRenderer;
 		var modalStackCount = Application.Current?.MainPage?.Navigation?.ModalStack?.Count ?? 0;
+		var stackCount = Application.Current?.MainPage?.Navigation?.NavigationStack?.Count ?? 0;
 		var mainPage = Application.Current?.MainPage ?? throw new NullReferenceException(nameof(Application.Current.MainPage));
 		if (modalStackCount > 0)
 		{
 			var index = modalStackCount - 1;
 			currentPageRenderer = mainPage.Navigation.ModalStack[index];
+		}
+		else if (stackCount > 0)
+		{
+			var index = stackCount - 1;
+			currentPageRenderer = mainPage.Navigation.NavigationStack[index];
 		}
 		else
 			currentPageRenderer = mainPage;
